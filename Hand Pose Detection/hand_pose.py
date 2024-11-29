@@ -55,6 +55,29 @@ profile = pipeline.start(config)
 align_to = rs.stream.color
 align = rs.align(align_to)
 
+# Modularize hand-tracking pipeline
+def capture_frame():
+    # Capture frame from camera
+    frame = camera.get_frame()
+    return frame
+
+def process_frame(frame):
+    # Process the captured frame with Mediapipe
+    hand_landmarks = mediapipe_model.process(frame)
+    return hand_landmarks
+
+def display_results(frame, hand_landmarks):
+    # Display processed results using OpenCV
+    cv2.imshow("Hand Tracking", frame)
+    cv2.waitKey(1)
+
+def main():
+    while True:
+        frame = capture_frame()
+        landmarks = process_frame(frame)
+        display_results(frame, landmarks)
+
+
 # ====== Get depth Scale ======
 depth_sensor = profile.get_device().first_depth_sensor()
 depth_scale = depth_sensor.get_depth_scale()
